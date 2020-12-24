@@ -35,45 +35,45 @@ const initialState = {
   }
 }
 class AddressBookForm extends React.Component {
-constructor(props) {
-super(props);
-this.state = {
-  fullName: '',
-  address: '',
-  locationInfo: {
-    "Andhra Pradesh": ["Amravati", "Chittoor", "Elluru", "Guntur", "Kadapa", "Kakinada", "Rajahmundry", "Vijayawada", "Visakhapatnam"],
-    "Bihar": ["Arrah", "Begusarai", "Bhagalpur", "Chhapra", "Darbhanga", "Gaya", "Muzaffarnagar", "Patna"],
-    "Madhya Pradesh": ["Bhopal", "Chitrakoot", "Indore", "Gwalior", "Jabalpur", "Satna", "Ujjain"],
-    "Gujarat": ["Ahmedabad", "Dwarka", "Gandhinagar", "Porbandar", "Rajkot", "Surat", "Vadodara"],
-    "Maharashtra": ["Ahmednagar", "Aurangabad", "Kolhapur", "Mumbai", "Nagpur", "Nashik", "Pune", "Thane"],
-    "Uttar Pradesh": ["Agra", "Aligarh", "Allahabad", "Bareilly", "Fatehpur", "Ghaziabad", "Hathras", "Kanpur", "Lucknow", "Noida", "Varanasi"]
-  },
-  city: '',
-  state: '',
-  zip: '',
-  phoneNumber: '',
+  constructor(props) {
+    super(props);
+    this.state = {
+      fullName: '',
+      address: '',
+      locationInfo: {
+        "Andhra Pradesh": ["Amravati", "Chittoor", "Elluru", "Guntur", "Kadapa", "Kakinada", "Rajahmundry", "Vijayawada", "Visakhapatnam"],
+        "Bihar": ["Arrah", "Begusarai", "Bhagalpur", "Chhapra", "Darbhanga", "Gaya", "Muzaffarnagar", "Patna"],
+        "Madhya Pradesh": ["Bhopal", "Chitrakoot", "Indore", "Gwalior", "Jabalpur", "Satna", "Ujjain"],
+        "Gujarat": ["Ahmedabad", "Dwarka", "Gandhinagar", "Porbandar", "Rajkot", "Surat", "Vadodara"],
+        "Maharashtra": ["Ahmednagar", "Aurangabad", "Kolhapur", "Mumbai", "Nagpur", "Nashik", "Pune", "Thane"],
+        "Uttar Pradesh": ["Agra", "Aligarh", "Allahabad", "Bareilly", "Fatehpur", "Ghaziabad", "Hathras", "Kanpur", "Lucknow", "Noida", "Varanasi"]
+      },
+      city: '',
+      state: '',
+      zip: '',
+      phoneNumber: '',
 
-  id: '',      
-  isUpdate: false,
-  isError: false,
+      id: '',      
+      isUpdate: false,
+      isError: false,
 
-  error: {
-    fullName: '',
-    address: '',
-    city: '',
-    state: '',
-    zip: '',
-    phoneNumber: ''
-  },  
-  valid: {
-    fullName: '',
-    address: '',
-    city: '',
-    state: '',
-    zip: '',
-    phoneNumber: ''
-  }
-}
+      error: {
+        fullName: '',
+        address: '',
+        city: '',
+        state: '',
+        zip: '',
+        phoneNumber: ''
+      },  
+      valid: {
+        fullName: '',
+        address: '',
+        city: '',
+        state: '',
+        zip: '',
+        phoneNumber: ''
+      }
+    }
     this.nameChangeHandler = this.nameChangeHandler.bind(this);
     this.phoneNumberChangeHandler = this.phoneNumberChangeHandler.bind(this);
     this.addressChangeHandler = this.addressChangeHandler.bind(this);
@@ -81,6 +81,36 @@ this.state = {
     this.stateChangeHandler = this.stateChangeHandler.bind(this);
     this.zipChangeHandler = this.zipChangeHandler.bind(this);
   }
+
+  componentDidMount = () => {
+    let id = this.props.match.params.id;
+    if(id !== undefined && id!=='') {
+      this.getContactById(id);
+    }
+  }
+
+  getContactById = (id) => {
+    new AddressBookService().getContactById(id)
+    .then(responseDTO => {
+      let responseText = responseDTO.data;
+      this.setContactData(responseText.data);
+    }).catch(error => {
+      console.log("Error while fetching contact data by ID :\n" + JSON.stringify(error));
+    })
+  }
+  setContactData = (contact) => {
+    this.setState({
+      id: contact.id,
+      fullName: contact.fullName,
+      address: contact.address,
+      city: contact.city,
+      state: contact.state,
+      zip: contact.zip,
+      phoneNumber: contact.phoneNumber,
+      isUpdate: true
+    });
+  }
+
   nameChangeHandler = (event) => {
     this.setState({fullName: event.target.value});
     this.checkName(event.target.value);
@@ -105,6 +135,7 @@ this.state = {
     this.setState({zip: event.target.value});
     this.checkZip(event.target.value);
   }
+
   initializeMessage = (field, errorMessage, validMessage) => {
     this.setState(previousState => ({
       error: {
@@ -123,7 +154,7 @@ this.state = {
     if(nameValue.length === 0) {
       this.initializeMessage('fullName', '', '');
     } else {
-      const NAME_REGEX = RegExp("^[A-Z]{1}[a-z]{2,}([ ][A-Z]{1}[a-z]{2,})?$");
+      const NAME_REGEX = RegExp("^[A-Z]{1}[a-z]{2,}[ ][A-Z]{1}[a-z]{2,}$");
       if(NAME_REGEX.test(nameValue)) {
         this.initializeMessage('fullName', '', '✓');
       } else {
@@ -213,15 +244,27 @@ this.state = {
         zip: this.state.zip,
         phoneNumber: this.state.phoneNumber
       }
-      new AddressBookService().addContact(contactObject)
-      .then(responseDTO => {
-        let responseText = responseDTO.data;
-        alert("Contact Added Successfully!!!\n" + JSON.stringify(responseText.data));
+      if(this.state.isUpdate) {
+        new AddressBookService().updateContact(contactObject)
+        .then(responseText => {
+          alert("Contact Updated Successfully!!!\n" + JSON.stringify(responseText.data));
+          this.reset();
+          this.props.history.push("/home");
+        }).catch(error => {
+          console.log("Error while updating Contact!!!\n" + JSON.stringify(error));
+        })
+      } else {
+        new AddressBookService().addContact(contactObject)
+        .then(responseDTO => {
+          let responseText = responseDTO.data;
+          alert("Contact Added Successfully!!!\n" + JSON.stringify(responseText.data));
+          this.reset();
+          this.props.history.push("/home");
+        }).catch(error => {
+          console.log("Error while adding Contact!!!\n" + JSON.stringify(error));
+        });
         this.reset();
-      }).catch(error => {
-        console.log("Error while adding Contact!!!\n" + JSON.stringify(error));
-      });
-      this.reset();
+      }
     }
   }
 
@@ -278,7 +321,7 @@ this.state = {
                         <label htmlFor="city" className="label text">City</label>
                         <div className="validity-check">
                           <select name="city" id="city" value={this.state.city} onChange={this.cityChangeHandler}>
-                            <option value="" disabled selected hidden>Select City</option>
+                            <option value="" hidden>Select City</option>
                             <option value="Aurangabad">Aurangabad</option>
                             <option value="Bhopal">Bhopal</option>
                             <option value="Chhapra">Chhapra</option>
@@ -295,7 +338,7 @@ this.state = {
                         <label htmlFor="state" className="label text">State</label>
                         <div className="validity-check">
                           <select name="state" id="state" value={this.state.state} onChange={this.stateChangeHandler}>
-                            <option value="" disabled selected hidden>Select State</option>
+                            <option value="" hidden>Select State</option>
                             <option value="Andhra Pradesh">Andhra Pradesh</option>
                             <option value="Bihar">Bihar</option>
                             <option value="Uttar Pradesh">Uttar Pradesh</option>
@@ -318,7 +361,7 @@ this.state = {
                 </div>
                 <div className="buttonParent">
                     <div className="submit-reset">
-                        <button type="submit" className="button submitButton">Add</button>
+                        <button type="submit" className="button submitButton">{this.state.isUpdate ? 'Update' : 'Add'}</button>
                         <button type="reset" className="resetButton button">Reset</button>
                     </div>
                 </div>

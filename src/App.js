@@ -14,6 +14,7 @@ function App() {
         <Switch>
           <Route exact path = "/address-book-form"><AddressBookForm /></Route>
           <Route exact path = "/home"><HomePage /></Route>
+          <Route exact path="/address-book-form/:id"><AddressBookForm /></Route>
           <Route exact path=""><Redirect exact from="/" to="/home" /></Route>
         </Switch>
       </Router>
