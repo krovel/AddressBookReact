@@ -3,12 +3,25 @@ import deleteIcon from '../../assets/icons/delete-black-18dp.svg';
 import editIcon from '../../assets/icons/create-black-18dp.svg';
 import './display.scss';
 import {withRouter} from 'react-router-dom';
+import AddressBookService from '../../services/address-book-service';
 
 const Display = (props) => {
 
   const edit = (id) => {
+    props.history.push(`/address-book-form/${id}`);
   }
   const remove = (id) => {
+    var deleteChoice = window.confirm("Contact will be deleted permanently!!!\nDo you wish to continue ?");
+    if(deleteChoice) {
+      new AddressBookService().deleteContact(id)
+      .then(responseText => {
+        alert("Contact deleted successfully!!!");
+        window.location.reload();
+      }).catch(error => {
+        alert("Error occurred while deleting the Contact!!!");
+        console.log("Delete Error : " + JSON.stringify(error));
+      });
+    }
   }
   return (
     <table id="display" className="table">
