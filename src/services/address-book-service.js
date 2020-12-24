@@ -8,4 +8,7 @@ export default class AddressBookService {
   addContact(employeeData) {
     return AxiosService.postService(`${URL}/create`, employeeData);
   }
+  getAllContacts() {
+    return AxiosService.getService(`${URL}/get`);
+  }
 }

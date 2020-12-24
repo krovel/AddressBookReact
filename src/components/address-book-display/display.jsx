@@ -1,0 +1,44 @@
+import React from 'react';
+import deleteIcon from '../../assets/icons/delete-black-18dp.svg';
+import editIcon from '../../assets/icons/create-black-18dp.svg';
+import './display.scss';
+import {withRouter} from 'react-router-dom';
+
+const Display = (props) => {
+
+  const edit = (id) => {
+  }
+  const remove = (id) => {
+  }
+  return (
+    <table id="display" className="table">
+      <tbody>        
+        <tr key={-1}>
+          <th>FullName</th>
+          <th>Address</th>
+          <th>City</th>
+          <th>State</th>
+          <th>Zip Code</th>
+          <th>Phone Number</th>
+          <th></th>
+        </tr>
+        {
+          props.contactArray && props.contactArray.map((contact, ind) => (
+            <tr key={ind}>
+                <td>{contact.fullName}</td>
+                <td>{contact.address}</td>
+                <td>{contact.city}</td>
+                <td>{contact.state}</td>
+                <td>{contact.zip}</td>
+                <td>{contact.phoneNumber}</td>
+                <td><img src={deleteIcon} onClick={() => remove(contact.id)} alt="delete" />
+                    <img src={editIcon} onClick={() => edit(contact.id)} alt="edit" /></td>
+            </tr>
+          ))
+        }
+        </tbody>
+    </table>
+  );
+}
+
+export default withRouter(Display);
