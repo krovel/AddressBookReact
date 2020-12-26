@@ -119,7 +119,6 @@
 
   .main-content {
     padding: 10px 0 10px;
-
     .header-content {
       display: flex;
       flex-direction: column;
@@ -133,6 +132,9 @@
         flex-direction: row;
         max-width: 100%;
       }
+    }
+    .add-button {
+        font-size: 0px;
     }
   }
   

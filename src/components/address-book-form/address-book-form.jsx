@@ -8,9 +8,18 @@ import AddressBookService from '../../services/address-book-service';
 const initialState = {
   fullName: '',
   address: '',  
-  city: '',
-  state: '',
+  city: [],
+  state : [
+    { name: "Andhra Pradesh", city: ["Amravati", "Chittoor", "Elluru", "Guntur", "Kadapa", "Kakinada", "Rajahmundry", "Vijayawada", "Visakhapatnam"]},
+    { name: "Bihar", city: ["Arrah", "Begusarai", "Bhagalpur", "Chhapra", "Darbhanga", "Gaya", "Muzaffarnagar", "Patna"]},
+    { name:  "Madhya Pradesh", city: ["Bhopal", "Chitrakoot", "Indore", "Gwalior", "Jabalpur", "Satna", "Ujjain"]},
+    { name: "Gujarat", city: ["Ahmedabad", "Dwarka", "Gandhinagar", "Porbandar", "Rajkot", "Surat", "Vadodara"]},
+    { name: "Maharashtra", city: ["Ahmednagar", "Aurangabad", "Kolhapur", "Mumbai", "Nagpur", "Nashik", "Pune", "Thane"]},
+    { name: "Uttar Pradesh", city: ["Agra", "Aligarh", "Allahabad", "Bareilly", "Fatehpur", "Ghaziabad", "Hathras", "Kanpur", "Lucknow", "Noida", "Varanasi"]},
+  ],
   zip: '',
+  selectedState : '',
+  selectedCity: '',
   phoneNumber: '',
 
   id: '',      
@@ -20,16 +29,16 @@ const initialState = {
   error: {
     fullName: '',
     address: '',
-    city: '',
-    state: '',
+    selectedCity: '',
+    selectedState: '',
     zip: '',
     phoneNumber: ''
   },  
   valid: {
     fullName: '',
     address: '',
-    city: '',
-    state: '',
+    selectedCity: '',
+    selectedState: '',
     zip: '',
     phoneNumber: ''
   }
@@ -40,16 +49,17 @@ class AddressBookForm extends React.Component {
     this.state = {
       fullName: '',
       address: '',
-      locationInfo: {
-        "Andhra Pradesh": ["Amravati", "Chittoor", "Elluru", "Guntur", "Kadapa", "Kakinada", "Rajahmundry", "Vijayawada", "Visakhapatnam"],
-        "Bihar": ["Arrah", "Begusarai", "Bhagalpur", "Chhapra", "Darbhanga", "Gaya", "Muzaffarnagar", "Patna"],
-        "Madhya Pradesh": ["Bhopal", "Chitrakoot", "Indore", "Gwalior", "Jabalpur", "Satna", "Ujjain"],
-        "Gujarat": ["Ahmedabad", "Dwarka", "Gandhinagar", "Porbandar", "Rajkot", "Surat", "Vadodara"],
-        "Maharashtra": ["Ahmednagar", "Aurangabad", "Kolhapur", "Mumbai", "Nagpur", "Nashik", "Pune", "Thane"],
-        "Uttar Pradesh": ["Agra", "Aligarh", "Allahabad", "Bareilly", "Fatehpur", "Ghaziabad", "Hathras", "Kanpur", "Lucknow", "Noida", "Varanasi"]
-      },
-      city: '',
-      state: '',
+      state : [
+        		{ name: "Andhra Pradesh", city: ["Amravati", "Chittoor", "Elluru", "Guntur", "Kadapa", "Kakinada", "Rajahmundry", "Vijayawada", "Visakhapatnam"]},
+        		{ name: "Bihar", city: ["Arrah", "Begusarai", "Bhagalpur", "Chhapra", "Darbhanga", "Gaya", "Muzaffarnagar", "Patna"]},
+        		{ name:  "Madhya Pradesh", city: ["Bhopal", "Chitrakoot", "Indore", "Gwalior", "Jabalpur", "Satna", "Ujjain"]},
+        		{ name: "Gujarat", city: ["Ahmedabad", "Dwarka", "Gandhinagar", "Porbandar", "Rajkot", "Surat", "Vadodara"]},
+            { name: "Maharashtra", city: ["Ahmednagar", "Aurangabad", "Kolhapur", "Mumbai", "Nagpur", "Nashik", "Pune", "Thane"]},
+            { name: "Uttar Pradesh", city: ["Agra", "Aligarh", "Allahabad", "Bareilly", "Fatehpur", "Ghaziabad", "Hathras", "Kanpur", "Lucknow", "Noida", "Varanasi"]},
+        	],
+			city : [],
+      selectedState : '',
+      selectedCity: '',
       zip: '',
       phoneNumber: '',
 
@@ -60,26 +70,20 @@ class AddressBookForm extends React.Component {
       error: {
         fullName: '',
         address: '',
-        city: '',
-        state: '',
+        selectedCity: '',
+        selectedState: '',
         zip: '',
         phoneNumber: ''
       },  
       valid: {
         fullName: '',
         address: '',
-        city: '',
-        state: '',
+        selectedCity: '',
+        selectedState: '',
         zip: '',
         phoneNumber: ''
       }
     }
-    this.nameChangeHandler = this.nameChangeHandler.bind(this);
-    this.phoneNumberChangeHandler = this.phoneNumberChangeHandler.bind(this);
-    this.addressChangeHandler = this.addressChangeHandler.bind(this);
-    this.cityChangeHandler = this.cityChangeHandler.bind(this);
-    this.stateChangeHandler = this.stateChangeHandler.bind(this);
-    this.zipChangeHandler = this.zipChangeHandler.bind(this);
   }
 
   componentDidMount = () => {
@@ -95,7 +99,7 @@ class AddressBookForm extends React.Component {
       let responseText = responseDTO.data;
       this.setContactData(responseText.data);
     }).catch(error => {
-      console.log("Error while fetching contact data by ID :\n" + JSON.stringify(error));
+      alert("Error while fetching contact data by ID :\n" + JSON.stringify(error));
     })
   }
   setContactData = (contact) => {
@@ -103,11 +107,12 @@ class AddressBookForm extends React.Component {
       id: contact.id,
       fullName: contact.fullName,
       address: contact.address,
-      city: contact.city,
-      state: contact.state,
+      selectedCity: contact.city,
+      selectedState: contact.state,
       zip: contact.zip,
       phoneNumber: contact.phoneNumber,
-      isUpdate: true
+      isUpdate: true,
+      city : this.state.state.find(stat => stat.name === contact.state).city
     });
   }
 
@@ -124,11 +129,12 @@ class AddressBookForm extends React.Component {
     this.checkAddress(event.target.value);
   }
   cityChangeHandler = (event) => {
-    this.setState({city: event.target.value})
+    this.setState({selectedCity: event.target.value})
     this.checkSelect('city', event.target.value);
   }
   stateChangeHandler = (event) => {
-    this.setState({state: event.target.value});
+    this.setState({selectedState: event.target.value});
+    this.setState({city : this.state.state.find(stat => stat.name === event.target.value).city});
     this.checkSelect('state', event.target.value);
   }
   zipChangeHandler = (event) => {
@@ -216,13 +222,13 @@ class AddressBookForm extends React.Component {
   }
 
   checkValidations = async () => {
-    await this.checkName(this.state.fullName);
-    await this.checkAddress(this.state.address);
-    await this.checkSelect('city',this.state.city);
-    await this.checkSelect('state',this.state.state);
-    await this.checkZip(this.state.zip);
-    await this.checkPhoneNumber(this.state.phoneNumber);
-    await this.checkGlobalError();
+     this.checkName(this.state.fullName);
+     this.checkAddress(this.state.address);
+     this.checkSelect('city',this.state.city);
+     this.checkSelect('state',this.state.state);
+     this.checkZip(this.state.zip);
+     this.checkPhoneNumber(this.state.phoneNumber);
+     this.checkGlobalError();
     return (this.state.isError);
   }
   save = async (event) => {
@@ -239,8 +245,8 @@ class AddressBookForm extends React.Component {
         id: this.state.id,
         fullName: this.state.fullName,
         address: this.state.address,
-        city: this.state.city,
-        state: this.state.state,
+        city: this.state.selectedCity,
+        state: this.state.selectedState,
         zip: this.state.zip,
         phoneNumber: this.state.phoneNumber
       }
@@ -248,22 +254,19 @@ class AddressBookForm extends React.Component {
         new AddressBookService().updateContact(contactObject)
         .then(responseText => {
           alert("Contact Updated Successfully!!!\n" + JSON.stringify(responseText.data));
-          this.reset();
           this.props.history.push("/home");
         }).catch(error => {
-          console.log("Error while updating Contact!!!\n" + JSON.stringify(error));
+          alert("Error while updating Contact!!!\n" + JSON.stringify(error));
         })
       } else {
         new AddressBookService().addContact(contactObject)
         .then(responseDTO => {
           let responseText = responseDTO.data;
           alert("Contact Added Successfully!!!\n" + JSON.stringify(responseText.data));
-          this.reset();
           this.props.history.push("/home");
         }).catch(error => {
-          console.log("Error while adding Contact!!!\n" + JSON.stringify(error));
+          alert("Error while adding Contact!!!\n" + JSON.stringify(error));
         });
-        this.reset();
       }
     }
   }
@@ -317,37 +320,30 @@ class AddressBookForm extends React.Component {
                     </div>
                 </div>
                 <div className="select-elements">
+                     <div name="select-state" id="select-state" className="select-div">
+                        <label htmlFor="state" className="label text">State</label>
+                        <div className="validity-check">
+                          <select name="state" id="state" value={this.state.selectedState} onChange={this.stateChangeHandler}>
+                          <option>Select State</option>
+			              			{this.state.state.map((e, key) => (
+						                	<option key={key}>{e.name}</option>
+				              		))}
+			                		</select>
+                          <valid-message className="valid-state" htmlFor="state">{this.state.valid.state}</valid-message>
+                          <error-output className="state-error" htmlFor="state">{this.state.error.state}</error-output>
+                        </div>
+                    </div>
                     <div name="select-city" id="select-city" className="select-div">
                         <label htmlFor="city" className="label text">City</label>
                         <div className="validity-check">
-                          <select name="city" id="city" value={this.state.city} onChange={this.cityChangeHandler}>
-                            <option value="" hidden>Select City</option>
-                            <option value="Aurangabad">Aurangabad</option>
-                            <option value="Bhopal">Bhopal</option>
-                            <option value="Chhapra">Chhapra</option>
-                            <option value="Lucknow">Lucknow</option>
-                            <option value="Mumbai">Mumbai</option>
-                            <option value="Nagpur">Nagpur</option>
-                            <option value="Vadodra">Vadodra</option>
-                          </select>
+                          <select name="city" id="city" value={this.state.selectedCity} onChange={this.cityChangeHandler}>
+                          <option>Select City</option>
+					              	{this.state.city.map((e, key) => (
+					              		<option key={key}>{e}</option>
+                          ))}
+				                	</select>
                           <valid-message className="valid-city" htmlFor="city">{this.state.valid.city}</valid-message>
                           <error-output className="city-error" htmlFor="city">{this.state.error.city}</error-output>
-                        </div>
-                    </div>
-                    <div name="select-state" id="select-state" className="select-div">
-                        <label htmlFor="state" className="label text">State</label>
-                        <div className="validity-check">
-                          <select name="state" id="state" value={this.state.state} onChange={this.stateChangeHandler}>
-                            <option value="" hidden>Select State</option>
-                            <option value="Andhra Pradesh">Andhra Pradesh</option>
-                            <option value="Bihar">Bihar</option>
-                            <option value="Uttar Pradesh">Uttar Pradesh</option>
-                            <option value="Maharashtra">Maharashtra</option>
-                            <option value="Madhya Pradesh">Madhya Pradesh</option>
-                            <option value="Gujarat">Gujarat</option>
-                          </select>
-                          <valid-message className="valid-state" htmlFor="state">{this.state.valid.state}</valid-message>
-                          <error-output className="state-error" htmlFor="state">{this.state.error.state}</error-output>
                         </div>
                     </div>
                     <div name="select-zip" id="select-zip" className="select-div">
