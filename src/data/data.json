@@ -1,0 +1,132 @@
+[
+    {
+        "region": "Andhra Pradesh",
+        "city": [
+          {
+            "name": "Amravati"
+            
+          },
+          {
+            "name": "Chittoor"
+           
+          },
+          {
+            "name": "Elluru"
+          },
+          {
+            "name": "Guntur"
+          },
+          {
+            "name": "Kadapa"
+          },
+          {
+            "name": "Vijayawada"
+          },
+          {
+            "name": "Visakhapatnam"
+          }
+        ]
+      },
+    {
+      "region": "Bihar",
+      "city": [
+        {
+          "name": "Arrah"
+          
+        },
+        {
+          "name": "Begusarai"
+         
+        },
+        {
+          "name": "Chhapra"
+        },
+        {
+          "name": "Darbhanga"
+        },
+        {
+          "name": "Gaya"
+        },
+        {
+          "name": "Patna"
+        }
+      ]
+    },
+    {
+      "region": "Madhya Pradesh",
+      "city": [
+        {
+          "name": "Bhopal"
+        },
+        {
+          "name": "Chitrakoot"
+        },
+        {
+          "name": "Gwalior"
+        },
+        {
+          "name": "Indore"
+        },
+        {
+          "name": "Jabalpur"
+        },
+        {
+          "name": "Satna"
+        },
+        {
+          "name": "Ujjain"
+        }
+      ]
+    },
+    {
+      "region": "Maharashtra",
+      "city": [
+        {
+          "name": "Ahmednagar"
+          
+        },
+        {
+          "name": "Aurangabad"
+        },
+        {
+          "name": "Kolhapur"
+        },
+        {
+          "name": "Mumbai"
+        },
+        {
+          "name": "Nagpur"
+        },
+        {
+          "name": "Pune"
+        }
+      ]
+    },
+    {
+      "region": "Uttar Pradesh",
+      "city": [
+        {
+          "name": "Agra"
+          
+        },
+        {
+          "name": "Aligarh"
+        },
+        {
+          "name": "Ghaziabad"
+        },
+        {
+          "name": "Kanpur"
+        },
+        {
+          "name": "Lucknow"
+        },
+        {
+          "name": "Noida"
+        },
+        {
+          "name": "Varanasi"
+        }
+      ]
+    }
+  ]
