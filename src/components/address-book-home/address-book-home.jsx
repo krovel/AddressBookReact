@@ -21,10 +21,9 @@ class HomePage extends React.Component {
     this.addressBookService.getAllContacts()
     .then(responseDTO => {
       let responseText = responseDTO.data;
-      console.log("Data received after GET Call :\n" + responseText.data);
       this.setState({contactArray: responseText.data});
     }).catch(errror => {
-      console.log("Error while fetching Contact List\nError : " + JSON.stringify(errror));
+      alert("Error while fetching Contact List\nError : " + JSON.stringify(errror));
     });
   }
 
