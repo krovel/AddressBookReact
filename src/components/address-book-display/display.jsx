@@ -19,7 +19,6 @@ const Display = (props) => {
         window.location.reload();
       }).catch(error => {
         alert("Error occurred while deleting the Contact!!!");
-        console.log("Delete Error : " + JSON.stringify(error));
       });
     }
   }
