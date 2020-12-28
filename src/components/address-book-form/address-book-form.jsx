@@ -213,8 +213,8 @@ class AddressBookForm extends React.Component {
   }
 
   checkGlobalError = () =>{
-    if(this.state.error.fullName.length === 0 && this.state.error.address.length === 0 && this.state.error.city.length === 0 
-      && this.state.error.state.length === 0 && this.state.error.zip.length === 0 && this.state.error.phoneNumber.length === 0) {
+    if(this.state.error.fullName.length === 0 && this.state.error.address.length === 0 && this.state.error.selectedCity.length === 0 
+      && this.state.error.selectedState.length === 0 && this.state.error.zip.length === 0 && this.state.error.phoneNumber.length === 0) {
         this.setState({isError: false});
       } else {
         this.setState({isError: true});
